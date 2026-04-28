@@ -1,0 +1,275 @@
+:root {
+  --board-bg: #2c4a3e;
+  --board-bg-2: #1f3a30;
+  --chalk: #f4f1e8;
+  --chalk-dim: #c9c2ad;
+  --line: #f4f1e8;
+  --accent: #ffd166;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(ellipse at top, #3a5a4c 0%, #1f3a30 60%, #142822 100%);
+  color: var(--chalk);
+  font-family: "Yusei Magic", "Hiragino Maru Gothic ProN", "Hannari", "Comic Sans MS",
+    "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.app {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 2rem;
+  margin: 0;
+  text-shadow: 1px 1px 0 #00000055, 0 0 8px #ffffff15;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  color: var(--chalk-dim);
+  font-size: 0.95rem;
+}
+
+.panel {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed rgba(244, 241, 232, 0.35);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 24px;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.25);
+}
+
+.label {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: var(--chalk-dim);
+}
+
+textarea#entries {
+  width: 100%;
+  min-height: 120px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--chalk);
+  border: 1px solid rgba(244, 241, 232, 0.25);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
+}
+
+textarea#entries:focus { outline: 2px solid var(--accent); }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 14px 0;
+}
+
+.count-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--chalk-dim);
+}
+
+input#winnerCount {
+  width: 80px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--chalk);
+  border: 1px solid rgba(244, 241, 232, 0.3);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.draw-btn {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  color: #1f3a30;
+  background: linear-gradient(180deg, #ffe28a 0%, #ffc94c 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #b8902e, 0 8px 18px rgba(0, 0, 0, 0.35);
+  transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+.draw-btn:hover { filter: brightness(1.05); }
+.draw-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #b8902e, 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+.draw-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+}
+
+.hint {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  color: var(--chalk-dim);
+  text-align: right;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.board-wrap {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 24px,
+      rgba(255, 255, 255, 0.02) 24px 25px
+    ),
+    radial-gradient(ellipse at center, #355a4b 0%, #1c3329 100%);
+  border-radius: 14px;
+  padding: 20px;
+  border: 6px solid #6b4a2b;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+#amida {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#amida text {
+  fill: var(--chalk);
+  font-family: inherit;
+  font-size: 16px;
+  text-anchor: middle;
+  user-select: none;
+}
+
+#amida .v-line { stroke: var(--line); stroke-width: 4; stroke-linecap: round; }
+#amida .h-line { stroke: var(--line); stroke-width: 4; stroke-linecap: round; }
+#amida .trail {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.7;
+}
+#amida .ball {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+}
+
+/* カード（上端の隠された当たり/ハズレ） */
+#amida .card { transform-box: fill-box; transform-origin: center; }
+#amida .card .card-rect {
+  fill: #2a3d33;
+  stroke: var(--chalk);
+  stroke-width: 2.5;
+  filter: drop-shadow(0 3px 0 rgba(0,0,0,0.4));
+  transition: fill 0.25s ease, stroke 0.25s ease;
+}
+#amida .card.opened .card-rect { fill: #4a5a4f; }
+#amida .card.opened.prize .card-rect {
+  fill: var(--accent);
+  stroke: #fff;
+  filter: drop-shadow(0 0 12px var(--accent));
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { filter: drop-shadow(0 0 8px var(--accent)); }
+  50%      { filter: drop-shadow(0 0 18px var(--accent)); }
+}
+#amida .card-q {
+  fill: var(--chalk);
+  font-size: 28px;
+  font-weight: bold;
+  text-anchor: middle;
+  user-select: none;
+}
+#amida .card-result {
+  fill: var(--chalk);
+  font-size: 16px;
+  font-weight: bold;
+  text-anchor: middle;
+  user-select: none;
+}
+#amida .card.opened.prize .card-result { fill: #1f3a30; }
+
+/* フリップ演出: scaleX で表→裏に切り替え */
+#amida .card.flipping {
+  animation: flip 0.44s ease-in-out;
+}
+@keyframes flip {
+  0%   { transform: scaleX(1); }
+  50%  { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+/* 下の名前ラベル */
+#amida .name-label { font-weight: bold; font-size: 17px; }
+
+/* 当選名のハロー */
+#amida .name-halo {
+  opacity: 0.35;
+  animation: halo 0.6s ease-out;
+}
+@keyframes halo {
+  0%   { r: 8; opacity: 0; }
+  60%  { r: 36; opacity: 0.55; }
+  100% { r: 28; opacity: 0.35; }
+}
+
+.winners {
+  list-style: none;
+  margin: 0;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 14px;
+  border: 1px dashed rgba(244, 241, 232, 0.35);
+  min-height: 120px;
+}
+.winners:empty::before {
+  content: "👀 抽選待ち...";
+  color: var(--chalk-dim);
+}
+.winners li {
+  padding: 10px 12px;
+  margin: 6px 0;
+  background: rgba(255, 255, 255, 0.08);
+  border-left: 5px solid var(--accent);
+  border-radius: 6px;
+  font-size: 1.05rem;
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 720px) {
+  .stage { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.5rem; }
+}
